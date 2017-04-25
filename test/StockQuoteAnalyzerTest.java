@@ -17,6 +17,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
+
 public class StockQuoteAnalyzerTest {
     @Mock
     private StockQuoteGeneratorInterface generatorMock;

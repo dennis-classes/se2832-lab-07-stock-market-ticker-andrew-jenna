@@ -28,9 +28,11 @@ public class StockQuoteAnalyzerTest {
 
     @DataProvider (name = "quoteGroup1")
     public Object[][] generalMotors(){
-        return new Object[][]{  new Object[]{"AA", "Alcoa Corporation", 100.01, 101.10, 1.09}, //
+        return new Object[][]{  new Object[]{"AA", "Alcoa Corporation", 100.00, 101.00, 1.00}, //+1%
                                 new Object[]{"BXC","Bluelinx Holdings Inc", 500.0, 500.0, 0}, //no change
-                                new Object[]{"CAJ","Canon Inc", 400.1, 489.6, -11.5}};
+                                new Object[]{"CAJ","Canon Inc", 400.00, 396.00, -4}, //-1%
+                                new Object[]{"DIS","Walt Disney Company", 1010.00, 500.0, -510}, //-50.4950495%
+                                new Object[]{"ELF","E.L.F. Beauty Inc", 300.0, 500.0, 200}}; //+66.6%
     }
 
     @BeforeMethod
@@ -54,6 +56,5 @@ public class StockQuoteAnalyzerTest {
     public void refreshShouldThrowStockTickerConnectionErrorWhenUnableToConnectToTickerSource() throws Exception {
         analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
         when(generatorMock.getCurrentQuote()).thenReturn(null);
-        //todo
     }
 }

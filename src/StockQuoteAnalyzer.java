@@ -118,8 +118,8 @@ public class StockQuoteAnalyzer {
 	 */
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
-			try {
-				if ((this.getPercentChangeSinceClose() > 0)) {
+			try {	//TODO was > 0
+				if ((this.getPercentChangeSinceClose() >= 1)) {
 					audioPlayer.playHappyMusic();
 				}
 				if ((this.getPercentChangeSinceClose() <= -1)) {
@@ -203,8 +203,8 @@ public class StockQuoteAnalyzer {
 		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-
-		return Math.round((100000 * this.currentQuote.getChange() / this.currentQuote.getClose())) / 100.0;
+		//TODO Fixed incorrect rounding
+		return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getClose())) / 100.0;
 	}
 
 	/**

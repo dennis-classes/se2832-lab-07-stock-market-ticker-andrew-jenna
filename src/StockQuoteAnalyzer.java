@@ -220,6 +220,9 @@ public class StockQuoteAnalyzer {
 	 *             data source.
 	 */
 	public double getChangeSinceLastCheck() throws InvalidAnalysisState {
-		return currentQuote.getLastTrade() - currentQuote.getLastTrade();
+		if (currentQuote == null) {
+			throw new InvalidAnalysisState("No quote has ever been retrieved.");//todo: was not here originally
+		}
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade(); //todo changed
 	}
 }

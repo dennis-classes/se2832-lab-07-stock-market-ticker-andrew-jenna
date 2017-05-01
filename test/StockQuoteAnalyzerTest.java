@@ -41,6 +41,13 @@ public class StockQuoteAnalyzerTest {
                                 new Object[]{"ELF","E.L.F. Beauty Inc", 300.0, 500.0, 200}}; //+66.6%
     }
 
+    @DataProvider (name = "TwoChangesQuotes")
+    public Object[][] twoChanges(){
+        return new Object[][]{  new Object[]{"AA", "Alcoa Corporation", 100.00, 101.00, 120},
+                                new Object[]{"DIS","Walt Disney Company", 1010.00, 500.0, 510},
+                                new Object[]{"ELF","E.L.F. Beauty Inc", 300.0, 500.0, 450}};
+    }
+
     @BeforeMethod
     public void setUp() throws Exception {
         generatorMock = mock(StockQuoteGeneratorInterface.class);
@@ -180,4 +187,15 @@ public class StockQuoteAnalyzerTest {
         analyzer.refresh();
         assertEquals(analyzer.getChangeSinceClose(), change);
     }
+
+    @Test (dataProvider = "TwoChangesQuotes")
+    public void getChangeSinceLastCheckShouldReturnCurrentMinusPreviousPrice(String symbol, String name, double price1, double price2, double price3) throws Exception{
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, price1, price2, price2-price1));
+        analyzer.refresh();
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, price2, price3, price3-price2));
+        analyzer.refresh();
+        assertEquals(analyzer.getChangeSinceLastCheck(), (price3-price2));
+    }
+
 }

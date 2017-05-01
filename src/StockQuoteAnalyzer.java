@@ -82,7 +82,7 @@ public class StockQuoteAnalyzer {
 			throw new NullPointerException("The source for stock quotes can not be null");
 		}
 		if (audioPlayer == null){
-			throw new NullPointerException("The audio player cannot be null"); //todo: added, was not throwing npe
+			throw new NullPointerException("The audio player cannot be null");
 		}
 		this.stockQuoteSource = stockQuoteSource;
 		this.audioPlayer = audioPlayer;
@@ -118,7 +118,7 @@ public class StockQuoteAnalyzer {
 	 */
 	public void playAppropriateAudio() {
 		if (audioPlayer != null) {
-			try {	//TODO was > 0
+			try {
 				if ((this.getPercentChangeSinceClose() >= 1)) {
 					audioPlayer.playHappyMusic();
 				}
@@ -151,7 +151,7 @@ public class StockQuoteAnalyzer {
 	 */
 
 	public double getPreviousClose() throws InvalidAnalysisState {
-		if (currentQuote == null) {				//todo fixed. was != null
+		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		return currentQuote.getClose();
@@ -185,9 +185,9 @@ public class StockQuoteAnalyzer {
 	 */
 	public double getChangeSinceClose() throws InvalidAnalysisState {
 		if (currentQuote == null) {
-			throw new InvalidAnalysisState("No quote has ever been retrieved."); //todo: was Null pointer exception thrown
+			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getChange(); //todo: removed "-currentQuote.getClose();"
+		return currentQuote.getChange();
 	}
 
 	/**
@@ -203,7 +203,6 @@ public class StockQuoteAnalyzer {
 		if (currentQuote == null) {
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		//TODO Fixed incorrect rounding
 		return Math.round((10000 * this.currentQuote.getChange() / this.currentQuote.getClose())) / 100.0;
 	}
 
@@ -221,8 +220,8 @@ public class StockQuoteAnalyzer {
 	 */
 	public double getChangeSinceLastCheck() throws InvalidAnalysisState {
 		if (currentQuote == null) {
-			throw new InvalidAnalysisState("No quote has ever been retrieved.");//todo: was not here originally
+			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
-		return currentQuote.getLastTrade() - previousQuote.getLastTrade(); //todo changed
+		return currentQuote.getLastTrade() - previousQuote.getLastTrade();
 	}
 }

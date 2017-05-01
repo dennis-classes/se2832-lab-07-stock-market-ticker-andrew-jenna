@@ -90,8 +90,8 @@ public class StockQuoteAnalyzerTest {
     @Test (dataProvider = "QuoteClasses")
     public void getPercentChangeSinceCloseShouldReturnPercentChangeWhenQuotesProvided(String symbol, String name, double previousClose, double lastTrade,  double change) throws Exception {
         DecimalFormat formatter = new DecimalFormat("#######.##");
-        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
-        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote("GM", previousClose, lastTrade, change));
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
         analyzer.refresh();
         double expected = Double.parseDouble(formatter.format((change/previousClose)*100.0)); // Rounds to 2 decimal places
         double result = analyzer.getPercentChangeSinceClose();
@@ -118,8 +118,8 @@ public class StockQuoteAnalyzerTest {
 
     @Test (dataProvider = "QuoteClasses")
     public void playAppropriateAudioShouldCallAppropriateMethodWhenCalled(String symbol, String name, double previousClose, double lastTrade,  double change) throws Exception {
-        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
-        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote("GM", previousClose, lastTrade, change));
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
 
         analyzer.refresh();
         double result = analyzer.getPercentChangeSinceClose();
@@ -136,7 +136,17 @@ public class StockQuoteAnalyzerTest {
             verify(audioMock, times(0)).playHappyMusic();
             verify(audioMock, times(0)).playSadMusic();
         }
+    }
 
+    @Test (dataProvider = "QuoteClasses")
+    public void playAppropriateAudioShouldPlayErrorWhenNoQuotesReteieved(String symbol, String name, double previousClose, double lastTrade,  double change) throws Exception {
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
+
+        analyzer.playAppropriateAudio();
+        verify(audioMock, times(0)).playHappyMusic();
+        verify(audioMock, times(1)).playErrorMusic();
+        verify(audioMock, times(0)).playSadMusic();
     }
 
     @Test (expectedExceptions = InvalidAnalysisState.class)

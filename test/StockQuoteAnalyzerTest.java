@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.mockito.Mock;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -52,9 +51,28 @@ public class StockQuoteAnalyzerTest {
         analyzer = new StockQuoteAnalyzer("ZZZZZZZZZ", generatorMock, audioMock);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void constructorShouldThrowExceptionWhenGeneratorIsInvalid() throws Exception {
+        analyzer = new StockQuoteAnalyzer("A", null, audioMock);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void constructorShouldThrowExceptionWhenPlayerIsInvalid() throws Exception {
+        analyzer = new StockQuoteAnalyzer("A", generatorMock, null);
+    }
+
+    @Test
+    public void getSymbolShouldReturnSymbol() throws Exception{
+        analyzer = new StockQuoteAnalyzer("A", generatorMock, audioMock);
+        assertEquals("A", analyzer.getSymbol());
+    }
+
     @Test (expectedExceptions = StockTickerConnectionError.class)
     public void refreshShouldThrowStockTickerConnectionErrorWhenUnableToConnectToTickerSource() throws Exception {
         analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
-        when(generatorMock.getCurrentQuote()).thenReturn(null);
+        when(generatorMock.getCurrentQuote()).thenThrow(new Exception());
+        analyzer.refresh();
     }
+
+
 }

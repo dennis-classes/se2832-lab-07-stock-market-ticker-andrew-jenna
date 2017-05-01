@@ -11,4 +11,4 @@
 | Between 219, 220 | No check for if the current quote was null | Could throw an unexpected NullPointerException |
 | 220 | Subtracts last trade from itself and returns it | Would always return 0 |
 
-![coverage](/lab7.png)
+![coverage](/lab7.PNG)

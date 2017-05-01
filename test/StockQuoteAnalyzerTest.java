@@ -5,6 +5,12 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.mockito.Mock;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -68,6 +74,26 @@ public class StockQuoteAnalyzerTest {
         analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
         when(generatorMock.getCurrentQuote()).thenThrow(new Exception());
         analyzer.refresh();
+    }
+
+    @Test (expectedExceptions = InvalidAnalysisState.class)
+    public void getPercentChangeSinceCloseShouldThrowInvalidAnalysisStateWhenNoQuoteReceived() throws Exception {
+        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
+        analyzer.getPercentChangeSinceClose();
+    }
+
+    @Test
+    public void getPercentChangeSinceCloseShouldReturnPercentChangeWhenQuotesProvided() throws Exception {
+        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
+        double change = 0;
+        double previousClose = 5.0;
+        double lastTrade = 6.0;
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote("GM", previousClose, lastTrade, change));
+        analyzer.refresh();
+        double result = analyzer.getPercentChangeSinceClose();
+
+        assertEquals(0.0, result);
+        verify(generatorMock, times(1)).getCurrentQuote();
     }
 
     @Test (expectedExceptions = InvalidAnalysisState.class)

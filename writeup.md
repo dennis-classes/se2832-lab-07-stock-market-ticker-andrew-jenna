@@ -10,3 +10,5 @@
 | 204 | Multiplied by 100000 then divided by 100 after rounding | This gave the percent times 10 instead of the percent |
 | Between 219, 220 | No check for if the current quote was null | Could throw an unexpected NullPointerException |
 | 220 | Subtracts last trade from itself and returns it | Would always return 0 |
+
+![coverage](/lab7.png)

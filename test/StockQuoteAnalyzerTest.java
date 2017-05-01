@@ -198,4 +198,11 @@ public class StockQuoteAnalyzerTest {
         assertEquals(analyzer.getChangeSinceLastCheck(), (price3-price2));
     }
 
+    @Test (expectedExceptions = InvalidAnalysisState.class)
+    public void getChangesSinceLastCheckShouldThrowExceptionWhenNoQuoteReceived() throws Exception {
+        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(null);
+        analyzer.refresh();
+        analyzer.getChangeSinceLastCheck();
+    }
 }

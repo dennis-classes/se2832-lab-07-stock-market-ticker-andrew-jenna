@@ -81,6 +81,9 @@ public class StockQuoteAnalyzer {
 		if (stockQuoteSource == null) {
 			throw new NullPointerException("The source for stock quotes can not be null");
 		}
+		if (audioPlayer == null){
+			throw new NullPointerException("The audio player cannot be null"); //todo: added, was not throwing npe
+		}
 		this.stockQuoteSource = stockQuoteSource;
 		this.audioPlayer = audioPlayer;
 	}
@@ -148,7 +151,7 @@ public class StockQuoteAnalyzer {
 	 */
 
 	public double getPreviousClose() throws InvalidAnalysisState {
-		if (currentQuote == null) {				//fixed. was != null
+		if (currentQuote == null) {				//todo fixed. was != null
 			throw new InvalidAnalysisState("No quote has ever been retrieved.");
 		}
 		return currentQuote.getClose();
@@ -182,9 +185,9 @@ public class StockQuoteAnalyzer {
 	 */
 	public double getChangeSinceClose() throws InvalidAnalysisState {
 		if (currentQuote == null) {
-			throw new NullPointerException("No quote has ever been retrieved.");
+			throw new InvalidAnalysisState("No quote has ever been retrieved."); //todo: was Null pointer exception thrown
 		}
-		return currentQuote.getChange()-currentQuote.getClose();
+		return currentQuote.getChange(); //todo: removed "-currentQuote.getClose();"
 	}
 
 	/**

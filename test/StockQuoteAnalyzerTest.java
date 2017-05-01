@@ -1,6 +1,7 @@
 import exceptions.InvalidAnalysisState;
 import exceptions.InvalidStockSymbolException;
 import exceptions.StockTickerConnectionError;
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
@@ -97,7 +98,7 @@ public class StockQuoteAnalyzerTest {
     }
 
     @Test (expectedExceptions = InvalidAnalysisState.class)
-    public void getPreviousCloseShouldReturnShouldThrowExceptionWhenCurrentQuoteIsNull() throws Exception {
+    public void getPreviousCloseShouldThrowExceptionWhenWhenNoQuoteReceived() throws Exception {
         analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
         when(generatorMock.getCurrentQuote()).thenReturn(null);
         analyzer.refresh();
@@ -110,5 +111,37 @@ public class StockQuoteAnalyzerTest {
         when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
         analyzer.refresh();
         assertEquals(analyzer.getPreviousClose(), previousClose);
+    }
+
+    @Test (expectedExceptions = InvalidAnalysisState.class)
+    public void getCurrentPriceShouldThrowExceptionWhenWhenNoQuoteReceived() throws Exception {
+        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(null);
+        analyzer.refresh();
+        analyzer.getCurrentPrice();
+    }
+
+    @Test (dataProvider = "QuoteClasses")
+    public void getCurrentPriceShouldReturnCurrentPricesWhenThereExistsACurrentQuote(String symbol, String name, double previousClose, double lastTrade,  double change) throws Exception{
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
+        analyzer.refresh();
+        assertEquals(analyzer.getCurrentPrice(), lastTrade);
+    }
+
+    @Test (expectedExceptions = InvalidAnalysisState.class)
+    public void getChangeSinceCloseShouldThrowExceptionWhenNoQuoteReceived() throws Exception {
+        analyzer = new StockQuoteAnalyzer("GM", generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(null);
+        analyzer.refresh();
+        analyzer.getChangeSinceClose();
+    }
+
+    @Test (dataProvider = "QuoteClasses")
+    public void getChangeSinceCloseShouldReturnChangeSinceClose(String symbol, String name, double previousClose, double lastTrade,  double change) throws Exception{
+        analyzer = new StockQuoteAnalyzer(symbol, generatorMock, audioMock);
+        when(generatorMock.getCurrentQuote()).thenReturn(new StockQuote(symbol, previousClose, lastTrade, change));
+        analyzer.refresh();
+        assertEquals(analyzer.getChangeSinceClose(), change);
     }
 }
